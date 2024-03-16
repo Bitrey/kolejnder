@@ -2,6 +2,10 @@
 
 import express from 'express';
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+// Carica le variabili d'ambiente da .env
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +33,19 @@ app.post('/api/departures/busstops', async (req, res) => {
 		console.error(error);
 		res.status(500).json({ message: 'Errore durante la richiesta API' });
 	}
+});
+
+// also, serve file /build/index.html
+app.use(express.static('build'));
+
+// Gestisce tutte le altre richieste
+app.use((req, res) => {
+	res.status(404).json({ message: 'Pagina non trovata' });
+});
+
+// se vai a / o /index.html, serve file /build/index.html
+app.get('/', (req, res) => {
+	res.sendFile('index.html', { root: 'build' });
 });
 
 // Avvia il server
